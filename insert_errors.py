@@ -121,5 +121,4 @@ def insert_maxim_temperature_errors(csv_filepath, csv_writeout_filepath):
     
     run_data_frame.to_csv(csv_writeout_filepath, sep=',')
 
-# TODO: This won't work... Need to first fix translation to MAXIM
 insert_maxim_temperature_errors('./Data/long_ramp_hold_2020-11-13.csv', 'test.csv')
