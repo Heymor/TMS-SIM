@@ -1,9 +1,6 @@
-from sys import byteorder
 import pandas as pd
 import random
-import sys
 import struct
-import binascii
 
 def float_to_bits(f):
     s = struct.pack('>f', f)
@@ -107,11 +104,12 @@ def insert_temperature_errors(csv_filepath, csv_writeout_filepath):
 
     run_data_frame.to_csv(csv_writeout_filepath, sep=',')
 
+    return run_data_frame
+
 def insert_maxim_temperature_errors(csv_filepath, csv_writeout_filepath):
     run_data_frame = pd.read_csv(csv_filepath)
 
     meas_cols = get_meas_cols(run_data_frame)
-
     for row in run_data_frame.itertuples():
         idx = row.Index
 
@@ -120,5 +118,7 @@ def insert_maxim_temperature_errors(csv_filepath, csv_writeout_filepath):
             run_data_frame.at[idx, run_data_frame.columns.values[meas_col]] = new_val
     
     run_data_frame.to_csv(csv_writeout_filepath, sep=',')
+
+    return run_data_frame
 
 insert_maxim_temperature_errors('./Data/long_ramp_hold_2020-11-13.csv', 'test.csv')
