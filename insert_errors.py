@@ -2,6 +2,8 @@ import pandas as pd
 import random
 import struct
 
+UPSET_THRESHOLD = 0.90
+
 def float_to_bits(f):
     s = struct.pack('>f', f)
     return struct.unpack('>L', s)[0]
@@ -43,7 +45,7 @@ def maxim_to_float(m):
     return f
 
 def insert_error(data_point):
-    if random.random() > 0.75:
+    if random.random() > UPSET_THRESHOLD:
         # Flip random bit
         # First unpack the float
         data_point = float_to_bits(data_point)
@@ -61,7 +63,7 @@ def insert_error(data_point):
     return data_point
 
 def insert_maxim_error(data_point):
-    if random.random() > 0.75:
+    if random.random() > UPSET_THRESHOLD:
         # Flip a random bit
         # First translate from temperature point to maxim 
         data_point = float_to_maxim(data_point)

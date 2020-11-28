@@ -2,7 +2,7 @@ import ctypes
 import os
 
 # Load the library
-lib = ctypes.CDLL(os.path.abspath("./build/adaptive_lib.so"))
+lib = ctypes.CDLL(os.path.abspath("./adaptive_module_discrete/build/adaptive_lib.so"))
 
 # Define the initialization function
 lib.AM_Discrete_initialize.argtypes = None

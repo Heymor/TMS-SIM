@@ -1,1 +1,4 @@
 adaptive-module-discrete/build
+test*.csv
+deriv.csv
+__pycache__/
