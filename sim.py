@@ -1,3 +1,4 @@
+from numpy.core.defchararray import index
 from insert_errors import (
     insert_maxim_temperature_errors, get_meas_cols
 )
@@ -29,7 +30,7 @@ def run_sim(csv_filepath, csv_writeout_filepath):
             avg_temp += row[meas_col + 1]
         avg_temp /= len(meas_cols)
         # Set plate average for in the error_df
-        error_df.at[idx, error_df.columns.values[5]] = avg_temp
+        error_df.at[idx, 'PlateAverage'] = avg_temp
         
         # Get set point, i.e. profile col in csv
         set_point = row[2]
@@ -51,11 +52,11 @@ def run_sim(csv_filepath, csv_writeout_filepath):
 
             pid_out = pid.update(set_point=set_point, curr_temp=avg_temp, curr_time=(curr_time + substep * 0.010))
             # Set PID PWM output and error
-            error_df.at[idx, error_df.columns.values[2]] = pid_out
-            error_df.at[idx, error_df.columns.values[6]] = pid.smoothed_error
+            error_df.at[idx, 'PWM'] = pid_out
+            error_df.at[idx, 'error'] = pid.smoothed_error
 
     # Write out completed simulation to csv
-    error_df.to_csv(csv_writeout_filepath, sep=',')
+    error_df.to_csv(csv_writeout_filepath, sep=',', index=False)
 
-run_sim('./Data/long_ramp_hold_2020-11-13.csv', 'test.csv')
+run_sim('test.csv', 'test.csv')
 

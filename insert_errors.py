@@ -104,7 +104,7 @@ def insert_temperature_errors(csv_filepath, csv_writeout_filepath):
             new_val = insert_error(row[meas_col + 1])
             run_data_frame.at[idx, run_data_frame.columns.values[meas_col]] = new_val
 
-    run_data_frame.to_csv(csv_writeout_filepath, sep=',')
+    run_data_frame.to_csv(csv_writeout_filepath, sep=',', index=False)
 
     return run_data_frame
 
@@ -119,8 +119,6 @@ def insert_maxim_temperature_errors(csv_filepath, csv_writeout_filepath):
             new_val = insert_maxim_error(row[meas_col + 1])
             run_data_frame.at[idx, run_data_frame.columns.values[meas_col]] = new_val
     
-    run_data_frame.to_csv(csv_writeout_filepath, sep=',')
+    run_data_frame.to_csv(csv_writeout_filepath, sep=',', index=False)
 
     return run_data_frame
-
-insert_maxim_temperature_errors('./Data/long_ramp_hold_2020-11-13.csv', 'test.csv')
