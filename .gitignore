@@ -2,3 +2,4 @@ adaptive-module-discrete/build
 test*.csv
 deriv.csv
 __pycache__/
+.ipynb_checkpoints/

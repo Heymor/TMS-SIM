@@ -42,18 +42,21 @@ def run_sim(csv_filepath, csv_writeout_filepath):
 
         # Times to call (substeps)
         num_substep = t_delta // .010
-
+        substep_length = t_delta / num_substep
+        pid_out = 0
         for substep in range(int(num_substep)):
             # Get and set new coeff
-            new_kp, new_ki, new_kd = tuple(onestep.one_step(avg_temp, set_point, (t_delta + substep * 0.010)))
+            # TODO: Is this an error? Should only pass in current tdelta aka substep*.010
+            new_kp, new_ki, new_kd = tuple(onestep.one_step(avg_temp, set_point, substep_length))
             pid.Kp = new_kp
             pid.Ki = new_ki
             pid.Kd = new_kd
 
             pid_out = pid.update(set_point=set_point, curr_temp=avg_temp, curr_time=(curr_time + substep * 0.010))
             # Set PID PWM output and error
-            error_df.at[idx, 'PWM'] = pid_out
-            error_df.at[idx, 'error'] = pid.smoothed_error
+            # TODO: Does this overwrite the same row's PWM and error each of the num_substep iterations?
+        error_df.at[idx, 'PWM'] = pid_out
+        error_df.at[idx, 'error'] = pid.smoothed_error
 
     # Write out completed simulation to csv
     error_df.to_csv(csv_writeout_filepath, sep=',', index=False)

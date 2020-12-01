@@ -5,6 +5,7 @@ import struct
 UPSET_THRESHOLD = 0.90
 
 def float_to_bits(f):
+    # How many bits is the return value? Why do we return the 0th element?
     s = struct.pack('>f', f)
     return struct.unpack('>L', s)[0]
 
@@ -44,14 +45,14 @@ def maxim_to_float(m):
 
     return f
 
-def insert_error(data_point):
-    if random.random() > UPSET_THRESHOLD:
+def insert_error(data_point, upset_threshold=UPSET_THRESHOLD):
+    if random.random() > upset_threshold:
         # Flip random bit
         # First unpack the float
         data_point = float_to_bits(data_point)
 
         # Get random bit position
-        num_bits = 16
+        num_bits = 16 # This is how long the float is when converted to bits?
         rand_bit = random.randrange(num_bits)
 
         # Flip bit
@@ -62,8 +63,8 @@ def insert_error(data_point):
 
     return data_point
 
-def insert_maxim_error(data_point):
-    if random.random() > UPSET_THRESHOLD:
+def insert_maxim_error(data_point, upset_threshold=UPSET_THRESHOLD):
+    if random.random() > upset_threshold:
         # Flip a random bit
         # First translate from temperature point to maxim 
         data_point = float_to_maxim(data_point)
@@ -79,6 +80,26 @@ def insert_maxim_error(data_point):
 
         # Change back to float
         data_point = maxim_to_float(data_point)
+
+    return data_point
+
+def insert_maxim_error_perbit(data_point, upset_threshold=.99):
+    '''
+    Each maxim bit has (1 - upset_threshold) chance of being flipped.
+    '''
+
+    data_point = float_to_maxim(data_point)
+    num_bits = len(data_point) * 8
+    for bitpos in range(num_bits):
+        if random.random() > upset_threshold:
+            bytepos = bitpos // 8
+            bitoffset = bitpos - (bytepos * 8)
+
+            # Flip bit
+            data_point[bytepos] ^= 1 << bitoffset
+
+            # Change back to float
+    data_point = maxim_to_float(data_point)
 
     return data_point
 
